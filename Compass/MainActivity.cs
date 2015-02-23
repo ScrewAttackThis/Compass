@@ -11,15 +11,13 @@ using System.Collections.Generic;
 
 namespace Compass
 {
-    [Activity(Label = "Compass", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Compass", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation=ScreenOrientation.Portrait)]
     public class MainActivity : Activity, ISensorEventListener
     {
         SensorManager sensorMgr;
         Sensor accelerometer;
         Sensor magnetometer;
-
-        float azimuth;
-
+        
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -30,23 +28,22 @@ namespace Compass
             sensorMgr = (SensorManager)GetSystemService(Context.SensorService);
             accelerometer = sensorMgr.GetDefaultSensor(SensorType.Accelerometer);
             magnetometer = sensorMgr.GetDefaultSensor(SensorType.MagneticField);
-
-            if(magnetometer != null && accelerometer != null)
-            {
-                
-            }
-            else
-            {
-                //Doesn't have required sensors
-            }
         }
 
         protected override void OnResume()
         {
             base.OnResume();
 
-            sensorMgr.RegisterListener(this, accelerometer, SensorDelay.Ui);
-            sensorMgr.RegisterListener(this, magnetometer, SensorDelay.Ui);
+
+            if (magnetometer != null && accelerometer != null)
+            {
+                sensorMgr.RegisterListener(this, accelerometer, SensorDelay.Ui);
+                sensorMgr.RegisterListener(this, magnetometer, SensorDelay.Ui);
+            }
+            else
+            {
+                //Doesn't have required sensors
+            }
         }
 
         protected override void OnPause()
@@ -62,6 +59,7 @@ namespace Compass
 
         List<float> gravity = new List<float>();
         List<float> magnet = new List<float>();
+        Queue<float> azimuths = new Queue<float>();
 
         public void OnSensorChanged(SensorEvent e)
         {
@@ -87,13 +85,31 @@ namespace Compass
                     float[] orientation = new float[3];
                     SensorManager.GetOrientation(R, orientation);
                     
-                    azimuth = orientation[0] * 180 / (float)Math.PI; //convert to degrees for magnetic north.
+                    float azimuth = orientation[0] * 180 / (float)Math.PI; //convert to degrees for magnetic north.
 
-                    //Temp arrow for demo purposes
-                    ImageView arrowImageView = FindViewById<ImageView>(Resource.Id.arrowImageView);
-                    arrowImageView.Rotation = -azimuth; //Points in magnetic north.
+                    //Temp compass for demo purposes
+                    ImageView compassImageView = FindViewById<ImageView>(Resource.Id.compassImageView);
+                    compassImageView.Rotation = -runningAverage(azimuth); //Points in magnetic north.
                 }
             }
+        }
+
+        private float runningAverage(float newValue)
+        {
+            if (azimuths.Count > 35)
+            {
+                azimuths.Dequeue();
+            }
+
+            azimuths.Enqueue((float)Math.Round(newValue));
+            float average = 0;
+
+            foreach(float value in azimuths)
+            {
+                average += value;
+            }
+
+            return average/azimuths.Count;
         }
     }
 }
