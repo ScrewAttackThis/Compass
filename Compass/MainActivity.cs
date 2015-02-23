@@ -59,8 +59,8 @@ namespace Compass
 
         List<float> gravity = new List<float>();
         List<float> magnet = new List<float>();
-        Queue<float> azimuths = new Queue<float>();
 
+        float azimuth;
         public void OnSensorChanged(SensorEvent e)
         {
             if (e.Sensor.Type == SensorType.MagneticField)
@@ -84,32 +84,24 @@ namespace Compass
                 {
                     float[] orientation = new float[3];
                     SensorManager.GetOrientation(R, orientation);
-                    
-                    float azimuth = orientation[0] * 180 / (float)Math.PI; //convert to degrees for magnetic north.
 
                     //Temp compass for demo purposes
                     ImageView compassImageView = FindViewById<ImageView>(Resource.Id.compassImageView);
-                    compassImageView.Rotation = -runningAverage(azimuth); //Points in magnetic north.
+
+                    azimuth = lowPassFilter(orientation[0] * 180 / (float)Math.PI, azimuth);
+                    compassImageView.Rotation = -azimuth; //Points in magnetic north.
+
+                    var azimuthTextView = FindViewById<TextView>(Resource.Id.azimuthTextView);
+                    azimuthTextView.Text = (-azimuth).ToString();
                 }
             }
         }
 
-        private float runningAverage(float newValue)
+        //Controls amount of smoothing.  0 < a < 1.  Smaller a, more smoothing but slower response
+        const float ALPHA = 0.07f;
+        private float lowPassFilter(float newInput, float output)
         {
-            if (azimuths.Count > 35)
-            {
-                azimuths.Dequeue();
-            }
-
-            azimuths.Enqueue((float)Math.Round(newValue));
-            float average = 0;
-
-            foreach(float value in azimuths)
-            {
-                average += value;
-            }
-
-            return average/azimuths.Count;
+            return (float)Math.Round(output + ALPHA * (newInput - output),1);
         }
     }
 }
