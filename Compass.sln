@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compass", "Compass\Compass.csproj", "{57B92358-0DE8-4619-BCDB-0E78544360F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compass Wear", "Compass Wear\Compass Wear.csproj", "{1FD0A869-6262-402F-830A-643C4A35735C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,12 @@ Global
 		{57B92358-0DE8-4619-BCDB-0E78544360F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57B92358-0DE8-4619-BCDB-0E78544360F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{57B92358-0DE8-4619-BCDB-0E78544360F7}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{1FD0A869-6262-402F-830A-643C4A35735C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FD0A869-6262-402F-830A-643C4A35735C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FD0A869-6262-402F-830A-643C4A35735C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1FD0A869-6262-402F-830A-643C4A35735C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FD0A869-6262-402F-830A-643C4A35735C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FD0A869-6262-402F-830A-643C4A35735C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
