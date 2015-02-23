@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Compass
 {
-    [Activity(Label = "Compass", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation=ScreenOrientation.Portrait)]
+    [Activity(Label = "Compass", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity, ISensorEventListener
     {
         SensorManager sensorMgr;
@@ -66,9 +66,15 @@ namespace Compass
         public void OnSensorChanged(SensorEvent e)
         {
             if (e.Sensor.Type == SensorType.MagneticField)
+            {
+                magnet.Clear();
                 magnet.AddRange(e.Values);
+            }
             if (e.Sensor.Type == SensorType.Accelerometer)
+            {
+                gravity.Clear();
                 gravity.AddRange(e.Values);
+            }
 
             if(magnet.Count > 0 && gravity.Count > 0)
             {
@@ -80,8 +86,12 @@ namespace Compass
                 {
                     float[] orientation = new float[3];
                     SensorManager.GetOrientation(R, orientation);
+                    
+                    azimuth = orientation[0] * 180 / (float)Math.PI; //convert to degrees for magnetic north.
 
-                    azimuth = orientation[0];
+                    //Temp arrow for demo purposes
+                    ImageView arrowImageView = FindViewById<ImageView>(Resource.Id.arrowImageView);
+                    arrowImageView.Rotation = -azimuth; //Points in magnetic north.
                 }
             }
         }
